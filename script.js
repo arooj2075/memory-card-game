@@ -1,92 +1,134 @@
-const emojis = ['🍎', '🍌', '🍇', '🍉', '🍒', '🍓', '🍍', '🥝'];
-const cardsArray = [...emojis, ...emojis];
-let flippedCards = [];
-let matchedCards = 0;
-let currentPlayer = 0;
-let mode = 'solo';
-let players = ['Player'];
-let scores = [0, 0];
 
-const board = document.getElementById('game-board');
-const scoreboard = document.getElementById('scoreboard');
-const winMessage = document.getElementById('win-message');
+const emojis = ["🍓", "🌈", "🍕", "🐱", "🌸", "⭐", "🎈", "🧸"];
+let cards = [];
+let firstCard, secondCard;
+let lockBoard = false;
+let soloMode = true;
+let currentPlayer = 1;
+let scores = {1: 0, 2: 0};
 
-function showFriendForm() {
-  document.getElementById('friend-form').style.display = 'block';
+function shuffle(array) {
+  return array.concat(array).sort(() => 0.5 - Math.random());
 }
 
-function startGame(selectedMode) {
-  mode = selectedMode;
-  if (mode === 'duo') {
-    const p1 = document.getElementById('player1').value || 'Player 1';
-    const p2 = document.getElementById('player2').value || 'Player 2';
-    players = [p1, p2];
-    scores = [0, 0];
-  }
-  document.getElementById('setup').style.display = 'none';
-  document.getElementById('game').style.display = 'block';
-  initBoard();
-  updateScoreboard();
-}
-
-function initBoard() {
+function createBoard() {
+  const board = document.getElementById('gameBoard');
   board.innerHTML = '';
-  cardsArray.sort(() => 0.5 - Math.random());
-
-  cardsArray.forEach((emoji) => {
+  cards = shuffle(emojis);
+  cards.forEach((emoji, index) => {
     const card = document.createElement('div');
     card.classList.add('card');
     card.dataset.emoji = emoji;
-
-    card.addEventListener('click', () => {
-      if (flippedCards.length < 2 && !card.classList.contains('flipped')) {
-        card.classList.add('flipped');
-        card.textContent = emoji;
-        flippedCards.push(card);
-
-        if (flippedCards.length === 2) {
-          checkMatch();
-        }
-      }
-    });
-
+    card.addEventListener('click', flipCard);
     board.appendChild(card);
   });
 }
 
+function startSoloGame() {
+  soloMode = true;
+  document.querySelector('.mode-selection').style.display = 'none';
+  document.querySelector('.scoreboard').style.display = 'block';
+  updateScores();
+  createBoard();
+}
+
+function showMultiplayerInput() {
+  document.getElementById('playerNames').style.display = 'block';
+  document.querySelector('.mode-selection').style.display = 'none';
+}
+
+function startMultiplayerGame() {
+  soloMode = false;
+  scores[1] = 0;
+  scores[2] = 0;
+  currentPlayer = 1;
+  document.querySelector('.scoreboard').style.display = 'block';
+  updateScores();
+  createBoard();
+  document.getElementById('playerNames').style.display = 'none';
+}
+
+function flipCard() {
+  if (lockBoard || this.classList.contains('flipped')) return;
+  this.classList.add('flipped');
+  this.textContent = this.dataset.emoji;
+
+  if (!firstCard) {
+    firstCard = this;
+    return;
+  }
+
+  secondCard = this;
+  checkMatch();
+}
+
 function checkMatch() {
-  const [first, second] = flippedCards;
-
-  if (first.dataset.emoji === second.dataset.emoji) {
-    matchedCards += 2;
-    scores[currentPlayer] += 10;
-    flippedCards = [];
-    updateScoreboard();
-
-    if (matchedCards === cardsArray.length) {
-      setTimeout(() => {
-        winMessage.textContent = mode === 'duo'
-          ? `🎉 Game Over! ${players[0]}: ${scores[0]} pts | ${players[1]}: ${scores[1]} pts`
-          : `🎉 You matched all cards! Score: ${scores[0]} pts`;
-      }, 300);
-    }
+  let isMatch = firstCard.dataset.emoji === secondCard.dataset.emoji;
+  if (isMatch) {
+    updateScore();
+    disableCards();
   } else {
-    setTimeout(() => {
-      first.classList.remove('flipped');
-      second.classList.remove('flipped');
-      first.textContent = '';
-      second.textContent = '';
-      flippedCards = [];
-      if (mode === 'duo') currentPlayer = 1 - currentPlayer;
-      updateScoreboard();
-    }, 800);
+    unflipCards();
+    if (!soloMode) switchTurn();
   }
 }
 
-function updateScoreboard() {
-  if (mode === 'duo') {
-    scoreboard.innerHTML = `${players[0]}: ${scores[0]} pts | ${players[1]}: ${scores[1]} pts<br><strong>Current Turn:</strong> ${players[currentPlayer]}`;
-  } else {
-    scoreboard.textContent = `Points: ${scores[0]}`;
+function disableCards() {
+  firstCard.removeEventListener('click', flipCard);
+  secondCard.removeEventListener('click', flipCard);
+  resetBoard();
+  checkGameEnd();
+}
+
+function unflipCards() {
+  lockBoard = true;
+  setTimeout(() => {
+    firstCard.classList.remove('flipped');
+    secondCard.classList.remove('flipped');
+    firstCard.textContent = '';
+    secondCard.textContent = '';
+    resetBoard();
+  }, 1000);
+}
+
+function resetBoard() {
+  [firstCard, secondCard] = [null, null];
+  lockBoard = false;
+}
+
+function updateScore() {
+  scores[currentPlayer] += 1;
+  updateScores();
+}
+
+function updateScores() {
+  const scoreText = soloMode
+    ? `Score: ${scores[1]}`
+    : `${getPlayerName(1)}: ${scores[1]} | ${getPlayerName(2)}: ${scores[2]} (Turn: ${getPlayerName(currentPlayer)})`;
+  document.getElementById('scores').textContent = scoreText;
+}
+
+function switchTurn() {
+  currentPlayer = currentPlayer === 1 ? 2 : 1;
+  updateScores();
+}
+
+function getPlayerName(num) {
+  const input = document.getElementById('player' + num);
+  return input ? input.value || 'Player ' + num : 'Player ' + num;
+}
+
+function checkGameEnd() {
+  const flippedCards = document.querySelectorAll('.card.flipped').length;
+  if (flippedCards === emojis.length * 2) {
+    let message;
+    if (soloMode) {
+      message = `🎉 You finished the game! Score: ${scores[1]}`;
+    } else {
+      if (scores[1] > scores[2]) message = `🏆 ${getPlayerName(1)} wins!`;
+      else if (scores[2] > scores[1]) message = `🏆 ${getPlayerName(2)} wins!`;
+      else message = `🤝 It's a tie!`;
+    }
+    document.getElementById('winnerMessage').textContent = message;
   }
 }

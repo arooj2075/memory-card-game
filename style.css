@@ -1,64 +1,39 @@
+
 body {
-  font-family: 'Comic Sans MS', cursive, sans-serif;
-  background: linear-gradient(to right, #ffecd2, #fcb69f);
+  font-family: sans-serif;
   text-align: center;
-  margin: 0;
-  padding: 20px;
+  background-color: #f9f9f9;
 }
-
-h1 {
-  color: #ff4081;
-  margin-bottom: 10px;
-}
-
-.score {
-  font-size: 20px;
-  color: #444;
-  margin-bottom: 20px;
-}
-
-button {
+h2 {
   margin-top: 20px;
-  padding: 10px 20px;
-  font-size: 16px;
-  border: none;
-  background-color: #ff4081;
-  color: white;
-  border-radius: 8px;
-  cursor: pointer;
 }
-
+.mode-selection, #playerNames, .scoreboard {
+  margin: 20px 0;
+}
 .game-board {
   display: grid;
-  grid-template-columns: repeat(4, 100px);
-  gap: 15px;
+  grid-template-columns: repeat(4, 80px);
   justify-content: center;
-  margin-top: 30px;
+  gap: 10px;
+  margin-top: 20px;
 }
-
 .card {
-  width: 100px;
-  height: 100px;
-  background-color: #ffe0f0;
+  background-color: #fff;
   border-radius: 10px;
-  font-size: 0;
-  cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  transition: transform 0.3s, background-color 0.3s;
-}
-
-.card.flipped {
-  background-color: #ff80ab;
-  font-size: 36px;
-  color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  width: 80px;
+  height: 80px;
   display: flex;
   justify-content: center;
   align-items: center;
-  transform: scale(1.1);
+  font-size: 30px;
+  cursor: pointer;
 }
-
-#win-message {
-  font-size: 24px;
-  color: green;
+.card.flipped {
+  background-color: #fffae6;
+}
+#winnerMessage {
+  font-size: 20px;
   margin-top: 20px;
+  color: green;
 }
