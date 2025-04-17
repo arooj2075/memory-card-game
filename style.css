@@ -1,0 +1,64 @@
+body {
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  background: linear-gradient(to right, #ffecd2, #fcb69f);
+  text-align: center;
+  margin: 0;
+  padding: 20px;
+}
+
+h1 {
+  color: #ff4081;
+  margin-bottom: 10px;
+}
+
+.score {
+  font-size: 20px;
+  color: #444;
+  margin-bottom: 20px;
+}
+
+button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  background-color: #ff4081;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.game-board {
+  display: grid;
+  grid-template-columns: repeat(4, 100px);
+  gap: 15px;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.card {
+  width: 100px;
+  height: 100px;
+  background-color: #ffe0f0;
+  border-radius: 10px;
+  font-size: 0;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: transform 0.3s, background-color 0.3s;
+}
+
+.card.flipped {
+  background-color: #ff80ab;
+  font-size: 36px;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: scale(1.1);
+}
+
+#win-message {
+  font-size: 24px;
+  color: green;
+  margin-top: 20px;
+}

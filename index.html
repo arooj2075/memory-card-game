@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arooj's Memory Game</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>🎮 Arooj's Memory Game ✨</h1>
+
+  <div id="setup">
+    <p>Select mode:</p>
+    <button onclick="startGame('solo')">Play Alone</button>
+    <button onclick="showFriendForm()">Play with Friend</button>
+    
+    <div id="friend-form" style="display:none; margin-top:10px;">
+      <input type="text" id="player1" placeholder="Player 1 Name" />
+      <input type="text" id="player2" placeholder="Player 2 Name" />
+      <button onclick="startGame('duo')">Start Game</button>
+    </div>
+  </div>
+
+  <div id="game" style="display:none;">
+    <div class="score" id="scoreboard"></div>
+    <div class="game-board" id="game-board"></div>
+    <div id="win-message"></div>
+    <button onclick="location.reload()">🔁 Restart</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
