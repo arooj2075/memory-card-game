@@ -30,15 +30,24 @@ button {
 
 .game-board {
   display: grid;
-  grid-template-columns: repeat(4, 100px);
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
   gap: 15px;
   justify-content: center;
   margin-top: 30px;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 600px) {
+  .game-board {
+    grid-template-columns: repeat(4, 100px);
+  }
 }
 
 .card {
-  width: 100px;
-  height: 100px;
+  width: 100%;
+  aspect-ratio: 1 / 1;
   background-color: #ffe0f0;
   border-radius: 10px;
   font-size: 0;
